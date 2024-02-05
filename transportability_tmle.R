@@ -78,6 +78,10 @@ prop.table(table(X,S),2)
 dat<-data.frame(y=Y,x=X,w1=final.data$c.mage,w2=final.data$parity1,w3=final.data$parity2,w4=final.data$medu2,w5=final.data$medu3,s=S)
 wmat<-data.frame(w1=final.data$c.mage,w2=final.data$parity1,w3=final.data$parity2,w4=final.data$medu2,w5=final.data$medu3)
 
+sitemodel<-"site ~ w1 + w2 + w3 + w4 + w5" 
+xmodel<-"x~w1+w2+w3" 
+outmodel<-"y ~ x + w1 + w2 + w3 + w4 + w5 + x:w4 + x:w5" 
+
 #ATE in the study and target populations (confidence intervals calculated by bootstrap)
 library(boot)
 boot_ci= function(mydata,indices) {
@@ -101,10 +105,6 @@ conf2<-boot.ci(results, type="perc",index=2)
 conf2
 
 #tmle to transport estimates from the study population to the target population
-sitemodel<-"site ~ w1 + w2 + w3 + w4 + w5" 
-xmodel<-"x~w1+w2+w3" 
-outmodel<-"y ~ x + w1 + w2 + w3 + w4 + w5 + x:w4 + x:w5" 
-
 tmle<-eattmle(x=dat$x, y =dat$y, site=dat$s, w =wmat, nsitemodel=sitemodel , nxmodel=xmodel , noutmodel=outmodel)
 est.tmle<-eattmle(x=dat$x, y =dat$y, site=dat$s, w =wmat, nsitemodel=sitemodel , nxmodel=xmodel , noutmodel=outmodel)$est 
 var.tmle<-tmle$var
