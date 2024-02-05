@@ -99,10 +99,14 @@ boot_ci= function(mydata,indices) {
                
 replicates=100
 results <- boot(data=dat, statistic=boot_ci, R=replicates)
-conf1<-boot.ci(results, type="perc",index=1)
-conf1
-conf2<-boot.ci(results, type="perc",index=2)
-conf2
+ate0<-results$t0[1]
+ate1<-results$t0[2]
+conf0<-boot.ci(results, type="perc",index=1)
+ate0 #ate in the target population
+conf0 #confidence interval
+conf1<-boot.ci(results, type="perc",index=2)
+ate1 #ate in the study population
+conf1 #confidence interval
 
 #tmle to transport estimates from the study population to the target population
 tmle<-eattmle(x=dat$x, y =dat$y, site=dat$s, w =wmat, nsitemodel=sitemodel , nxmodel=xmodel , noutmodel=outmodel)
